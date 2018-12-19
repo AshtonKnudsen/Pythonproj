@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Authors and quotes</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'postings/css/skeleton.css' %}" />
+</head>
+
+<body>
+    <h1>A peaceful place to post nice quotes from bad authors</h1>
+    <form action="/logout" style="display: inline-block;">
+        <input type="submit" value="Exit">
+    </form>
+    <form action="/edit/{{request.session.id}}" style="display: inline-block;">
+        <input type="submit" value="Edit Account Info">
+    </form>
+    <form action="/posts/postmessage/{{request.session.id}}" method="POST" style="float: right; margin-right: 300px;">
+        {% csrf_token %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <h3>Post a quote</h3>
+        <input type="text" name="author" placeholder="Author name" style="display: block;">
+        <textarea placeholder="Their quote here!" name="quotes"></textarea><br>
+        <input type="submit" class="button-primary" value="Post">
+    </form>
+    {% for p in Post %}
+    <div style="border: 1px solid silver; width: 40%; text-align: center;">
+        <h4><span style="color: #39CCCC;">{{p.user.first_name}}</span> Posted At {{p.created_at}}</h4>
+        <h5>{{p.author_name}}</h5>
+        <p style="font-size: 16px;">"{{p.message}}"</p> 
+        <form action="/posts/allposts/{{p.user_name}}">
+            <input type="submit" value="View" class="button-primary">
+        </form>
+        {% if request.session.id == p.user.id %}
+        <form action="/posts/delete/{{p.id}}">
+            <input type="submit" name="delete" value="Delete" style="color: red;">
+        </form>
+        {% endif %}
+    </div>
+
+    {% endfor %}
+</body>
+
+</html>

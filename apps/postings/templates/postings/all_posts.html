@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>All Posts</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'postings/cdd/skeleton.css' %}" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <h1>All Their Posts</h1>
+    {% for p in postes %}
+    <div style="border: 1px solid silver; width: 40%; text-align: center;">
+        <h4><span style="color: #39CCCC;">{{p.user_name}}</span> Posted At {{p.created_at}}</h4>
+        <h5>{{p.author_name}}</h5>
+        <p style="font-size: 16px;">"{{p.message}}"</p>
+
+        {% if request.session.id == p.user.id %}
+        <form action="/posts/delete/{{p.id}}">
+            <input type="submit" name="delete" value="Delete" style="color: red;">
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</body>
+</html>
